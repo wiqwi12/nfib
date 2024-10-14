@@ -1,41 +1,10 @@
 package queryBuilder
 
 import (
-	"database/sql"
 	"fib/internal/models"
 	"fmt"
 	"strings"
-
-	"github.com/gofiber/fiber/v2/log"
 )
-
-func IsExsist(db *sql.DB, bookRequest *models.Book) bool {
-	var conditions []string
-
-	if bookRequest.Author_name != "" {
-		conditions = append(conditions, fmt.Sprintf("author_name = '%s'", bookRequest.Author_name))
-	}
-
-	if bookRequest.Book_title != "" {
-		conditions = append(conditions, fmt.Sprintf("book_title = '%s'", bookRequest.Book_title))
-	}
-
-	query := "SELECT EXISTS (SELECT 1 FROM books"
-
-	if len(conditions) != 0 {
-		query += " WHERE " + strings.Join(conditions, " AND ")
-	}
-
-	query += ")"
-
-	var exists bool
-	err := db.QueryRow(query).Scan(&exists)
-	if err != nil {
-		log.Error("Query err", err)
-	}
-
-	return exists
-}
 
 func SelectBuilder(bookRequest *models.Book) string {
 
